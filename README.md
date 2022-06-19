@@ -1,3 +1,5 @@
 # Section 21.7
 
-![alt text](https://github.com/conner-mcnicholas/AirflowMiniProject/images/AirflowREADME.png?raw=true)
+README
+
+![alt text](https://github.com/conner-mcnicholas/AirflowMiniProject/blob/main/images/AirflowREADME.png?raw=true)
