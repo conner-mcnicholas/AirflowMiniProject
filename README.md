@@ -2,4 +2,4 @@
 
 README
 
-![alt text](https://github.com/conner-mcnicholas/AirflowMiniProject/blob/main/images/AirflowREADME.png?raw=true)
+![alt text](https://github.com/conner-mcnicholas/AirflowMiniProject/blob/main/images/picREADME.png?raw=true)
