@@ -7,7 +7,6 @@ from airflow.operators.python import PythonOperator
 from airflow.utils import timezone
 from airflow.models.baseoperator import chain
 import pandas as pd
-from os.path import expanduser
 
 today = str(date.today())
 
@@ -15,7 +14,7 @@ today = str(date.today())
 default_args = {
     "owner": "airflow",
     "start_date": timezone.pendulum.today() - timedelta(days=1),
-    "retries": 2,
+    "retries": 1,
     "retry_delay": timedelta(minutes=5)}
 
 dag = DAG(
@@ -32,12 +31,22 @@ t0 = BashOperator(
 
 # Create PythonOperator to download the market data (t1,t2)
 def download_data(sym):
-    start_date = date.today()
-    #start_date = date.today() - timedelta(days=3) #If manually triggering on a Sunday
+    #dynamic config solution for manually triggered weekend tests.
+    days_since_fri = 4-pd.Timestamp(today).dayofweek
+    if days_since_fri < 0:
+        print('Happy Weekend.  Manual run will take data from last Friday')
+        start_date = date.today()+timedelta(days=days_since_fri)
+    elif pd.Timestamp(str(datetime.today())).day_name() == 'Monday' and datetime.today().hour < 21:
+        print('Monday trading not complete yet. Data will come from last Friday.')
+        start_date = date.today()-timedelta(days=3)
+    else:
+        start_date = date.today()
     end_date = start_date + timedelta(days=1)
-    print("Downloading "+sym+"_data.csv to "+"/opt/airflow/")
+
+    print(f"Downloading {str(start_date)}/{sym} to a lightweight spooky \
+     docker container environment directory path")
     df = yf.download(sym,start=start_date,end=end_date,interval='1m')
-    df.to_csv(sym+"_data.csv",header = True)
+    df.to_csv(f"{sym}_data.csv", header = True)
     print("Download complete!\n")
 
 t1 = PythonOperator(
@@ -68,9 +77,14 @@ def query_all():
     tmpdir = f"/tmp/data/{today}/"
     df_aapl = pd.read_csv(f"{tmpdir}/AAPL_data.csv")
     df_tsla = pd.read_csv(f"{tmpdir}/TSLA_data.csv")
-    print('Executing query: "total_vol = pd.DataFrame(df_aapl.Volume).join(df_tsla.Volume.rename(\'Vol2\')).sum(axis=0)"')
+
+    print('Executing query: \
+    "total_vol = pd.DataFrame(df_aapl.Volume).join( \
+    df_tsla.Volume.rename(\'Vol2\')).sum(axis=0)"')
+
     total_vol = pd.DataFrame(df_aapl.Volume).join(df_tsla.Volume.rename('Vol2')).sum(axis=0)
-    total_vol_str = (f"Total AAPL Shares Traded: %s , Total TSLA Shares Traded: %s " %tuple(total_vol))
+    total_vol_str = "Total AAPL Shares Traded: "+'{:,}'.format(total_vol[0])+" , Total TSLA Shares Traded: "+'{:,}'.format(total_vol[1])+'\n'
+    print(f"\nRESULTS -> {total_vol_str} \n")
     with open(f"{tmpdir}/daily_trade_volumes.txt", "w") as txtfile:
         txtfile.write(total_vol_str)
 
