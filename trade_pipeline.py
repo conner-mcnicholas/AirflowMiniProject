@@ -22,7 +22,7 @@ dag = DAG(
     'marketvol',
     default_args=default_args,
     description='A simple DAG',
-    schedule_interval="0 6 * * 1-5")
+    schedule_interval="0 18 * * 1-5")
 
 # Create BashOperator to initialize tmp dir for data download
 t0 = BashOperator(
