@@ -10,4 +10,4 @@
 <br>
 ![alt text](https://github.com/conner-mcnicholas/AirflowMiniProject/blob/main/images/dag_gantt.png?raw=true)
 <br>
-![alt text](https://github.com/conner-mcnicholas/AirflowMiniProject/blob/main/images/switchpic.png?raw=true)
+![alt text](https://github.com/conner-mcnicholas/AirflowMiniProject/blob/main/images/output.png?raw=true)
