@@ -39,7 +39,7 @@ def download_data(sym):
         start_date = start_date-timedelta(days=1)
         end_date = start_date+timedelta(days=1)
         df = yf.download(sym,start=start_date,end=end_date,interval='1m')
-    print(f"\nDownloaded {len(df)} rows  of {sym} data for {str(start_date)} \n")
+    print(f"    SUCCESS -> Downloaded {len(df)} rows  of {sym} data for {str(start_date)} \n")
     df.to_csv(f"{sym}_data.csv", header = True)
 
 t1 = PythonOperator(
@@ -77,7 +77,7 @@ def query_all():
 
     total_vol = pd.DataFrame(df_aapl.Volume).join(df_tsla.Volume.rename('Vol2')).sum(axis=0)
     total_vol_str = "Total AAPL Shares Traded: "+'{:,}'.format(total_vol[0])+" , Total TSLA Shares Traded: "+'{:,}'.format(total_vol[1])+'\n'
-    print(f"\nRESULTS -> {total_vol_str} \n")
+    print(f"RESULTS -> {total_vol_str}")
     with open(f"{tmpdir}/daily_trade_volumes.txt", "w") as txtfile:
         txtfile.write(total_vol_str)
 
