@@ -36,12 +36,11 @@ def download_data(sym):
     end_date = start_date + timedelta(days=1)
     df = yf.download(sym,start=start_date,end=end_date,interval='1m')
     while len(df) == 0:
-        print(f'NO TRADE DATA EXISTS ON {start_date}!\npulling trade data from: {end_date}...')
-        start_date = start_date - timedelta(days=1)
-        end_date = end_date - timedelta(days=1)
+        start_date = start_date-timedelta(days=1)
+        end_date = start_date+timedelta(days=1)
         df = yf.download(sym,start=start_date,end=end_date,interval='1m')
+    print(f"\nDownloaded {len(df)} rows  of {sym} data for {str(start_date)} \n")
     df.to_csv(f"{sym}_data.csv", header = True)
-    print(f"Downloaded {len(df)} rows of {sym} data\n")
 
 t1 = PythonOperator(
     task_id = "task1",
