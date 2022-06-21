@@ -31,21 +31,14 @@ t0 = BashOperator(
 
 # Create PythonOperator to download the market data (t1,t2)
 def download_data(sym):
-    #dynamic config solution for manually triggered weekend tests.
-    days_since_fri = 4-pd.Timestamp(today).dayofweek
-    if days_since_fri < 0:
-        print('Happy Weekend.  Manual run will take data from last Friday')
-        start_date = date.today()+timedelta(days=days_since_fri)
-    elif pd.Timestamp(str(datetime.today())).day_name() == 'Monday' and datetime.today().hour < 21:
-        print('Monday trading not complete yet. Data will come from last Friday.')
-        start_date = date.today()-timedelta(days=3)
-    else:
-        start_date = date.today()
+    #dynamic config solution for manually triggered weekend tests.    
+    start_date = date.today()
     end_date = start_date + timedelta(days=1)
-
-    print(f"Downloading {str(start_date)}/{sym} to a lightweight spooky \
-     docker container environment directory path")
     df = yf.download(sym,start=start_date,end=end_date,interval='1m')
+    while len(df) == 0:
+        start_date = start_date - timedelta(days=1)
+        end_date = end_date - timedelta(days=1)
+        print(f'NO TRADE DATA EXISTS ON {$start_date}!\npulling trade data from: {$end_date}...')
     df.to_csv(f"{sym}_data.csv", header = True)
     print("Download complete!\n")
 
