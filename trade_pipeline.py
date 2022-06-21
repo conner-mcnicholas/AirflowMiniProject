@@ -36,7 +36,7 @@ def download_data(sym):
     end_date = start_date + timedelta(days=1)
     df = yf.download(sym,start=start_date,end=end_date,interval='1m')
     while len(df) == 0:
-        print(f'NO TRADE DATA EXISTS ON {$start_date}!\npulling trade data from: {$end_date}...')
+        print(f'NO TRADE DATA EXISTS ON {start_date}!\npulling trade data from: {end_date}...')
         start_date = start_date - timedelta(days=1)
         end_date = end_date - timedelta(days=1)
         df = yf.download(sym,start=start_date,end=end_date,interval='1m')
