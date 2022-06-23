@@ -11,3 +11,5 @@
 ![alt text](https://github.com/conner-mcnicholas/AirflowMiniProject/blob/main/images/dag_gantt.png?raw=true)
 <br>
 ![alt text](https://github.com/conner-mcnicholas/AirflowMiniProject/blob/main/images/output.png?raw=true)
+<br>
+![alt text](https://github.com/conner-mcnicholas/AirflowMiniProject/blob/main/images/logerrors.png?raw=true)
